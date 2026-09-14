@@ -327,3 +327,51 @@ After you update the Policy, make sure to empty the log file so it only contains
 
  
  
+ ## Question P1 | Audit Log Policy
+
+Using RBAC Authorization
+
+ 
+
+Solve this question on: ```ssh cks3477```
+
+ 
+
+You're asked to implement some RBAC for user ```gianna```:
+
+There are existing cluster-level RBAC resources in place to, among other things, ensure that user ```gianna``` can never read Secret contents cluster-wide. Confirm this is correct or restrict the existing RBAC resources to ensure this.
+
+In addition, create more RBAC resources to allow user ```gianna``` to create Pods and Deployments in Namespaces ```security```, ```restricted``` and ```internal```. It's likely the user will receive these exact permissions as well for other Namespaces in the future.
+
+To test your RBAC you can:
+
+Switch to the other context with:
+
+
+```k config use-context gianna@infra-prod```
+And afterwards switch back to the default context with:
+
+
+```k config use-context cks3477-admin@kubernetes```
+ 
+## Question P2 | Audit Log Policy
+
+Auditing Managing Secrets using kubectl
+
+Solve this question on: ```ssh cks3477```
+
+Namespace ```security``` contains five Secrets of type Opaque which can be considered highly confidential. The latest Incident-Prevention-Investigation revealed that ServiceAccount ```p.auster``` had too broad access to the cluster for some time. This SA should never have had access to any Secrets in that Namespace.
+
+Find out which Secrets in Namespace ```security``` this SA accessed by looking at the Audit Logs under ```/course/p2/audit.log```.
+
+For only those Secrets that were accessed by this SA, change their password to any new string.
+ 
+## Question P3 | Audit Log Policy
+
+ Solve this question on: ```ssh cks8930```
+
+A security scan result shows an unknown miner process running on one of the nodes in this cluster.
+
+The report states that the process is listening on port 6666.
+
+Kill the process and delete the binary.
