@@ -1,0 +1,219 @@
+openssl
+_______
+
+	openssl genrsa -out /root/60099.key						
+							
+	openssl req -new -key /root/60099.key -subj "/CN=60099@internal.users" -out /root/60099.csr						
+							
+							
+	root@controlplane:~$ openssl x509 -req -in /root/60099.csr -CA /etc/kubernetes/pki/ca.crt -CAkey /etc/kubernetes/pki/ca.key \						
+	    -CAcreateserial -out /root/60099.crt -days 10000 						
+	Certificate request self-signature ok						
+	subject=CN = 60099@internal.users						
+							
+	root@controlplane:~$ kubectl get csr						
+	No resources found						
+							
+	root@controlplane:~$ kubectl config set-credentials 60099@internal.users --client-key=/root/60099.key --client-certificate=/root/60099.crt --embed-certs=true						
+	User "60099@internal.users" set.						
+							
+	root@controlplane:~$ kubectl config set-context 60099@internal.users --cluster=kubernetes --user=60099@internal.users						
+	Context "60099@internal.users" created.						
+	root@controlplane:~$ 						
+
+Ingress
+_______
+
+	root@controlplane:~$  cat ingress-rule.yaml						
+	apiVersion: networking.k8s.io/v1						
+	kind: Ingress						
+	metadata:						
+	  name: world						
+	spec:						
+	  ingressClassName: nginx						
+	  rules:						
+	  - host: "world.universe.mine"						
+	    http:						
+	      paths:						
+	      - pathType: Prefix						
+	        path: "/asia"						
+	        backend:						
+	          service:						
+	            name: asia						
+	            port:						
+	              number: 80						
+	      - pathType: Prefix						
+	        path: "/europe"						
+	        backend:						
+	          service:						
+	            name: europe						
+	            port:						
+	              number: 80						
+							
+	root@controlplane:~$ k get ing -A						
+	NAMESPACE   NAME    CLASS   HOSTS                 ADDRESS      PORTS   AGE						
+	world       world   nginx   world.universe.mine   172.30.1.2   80      12m						
+	root@controlplane:~$ k get ingressclass -A						
+	NAME    CONTROLLER             PARAMETERS   AGE						
+	nginx   k8s.io/ingress-nginx   <none>       52m						
+	root@controlplane:~$ k get svc -A						
+	NAMESPACE       NAME                                 TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE						
+	default         kubernetes                           ClusterIP   10.96.0.1        <none>        443/TCP                      10d						
+	ingress-nginx   ingress-nginx-controller             NodePort    10.99.26.228     <none>        80:30080/TCP,443:30443/TCP   52m						
+	ingress-nginx   ingress-nginx-controller-admission   ClusterIP   10.110.41.133    <none>        443/TCP                      52m						
+	kube-system     cilium-envoy                         ClusterIP   None             <none>        9964/TCP                     10d						
+	kube-system     kube-dns                             ClusterIP   10.96.0.10       <none>        53/UDP,53/TCP,9153/TCP       10d						
+	world           asia                                 ClusterIP   10.106.138.171   <none>        80/TCP                       47m						
+	world           europe                               ClusterIP   10.100.199.8     <none>        80/TCP                       47m						
+	root@controlplane:~$ 						
+							
+							
+	Sample NodePort						
+							
+	apiVersion: v1						
+	kind: Service						
+	metadata:						
+	  name: my-service						
+	spec:						
+	  type: NodePort						
+	  selector:						
+	    app.kubernetes.io/name: MyApp						
+	  ports:						
+	    - port: 80						
+	      # By default and for convenience, the `targetPort` is set to						
+	      # the same value as the `port` field.						
+	      targetPort: 80						
+	      # Optional field						
+	      # By default and for convenience, the Kubernetes control plane						
+	      # will allocate a port from a range (default: 30000-32767)						
+	      nodePort: 30007						
+
+
+Secret Encryption
+_________________
+
+1	Create Encryption Configuration
+	root@controlplane:/etc/kubernetes/manifests$ cat /etc/kubernetes/etcd/ec.yaml
+	apiVersion: apiserver.config.k8s.io/v1
+	kind: EncryptionConfiguration
+	resources:
+	  - resources:
+	      - secrets
+	    providers:   # order of provider is important
+	      # This configuration does not provide data confidentiality. The first
+	      # configured provider is specifying the "identity" mechanism, which
+	      # stores resources as plain text.
+	      #
+	      - aesgcm:
+	          keys:
+	            - name: key1
+	              secret: dGhpcy1pcy12ZXJ5LXNlYw==
+	      - identity: {} # plain text, in other words NO encryption
+	
+	root@controlplane:/etc/kubernetes/manifests$ 
+	
+2	Update kube-apiserver and restart
+	root@controlplane:/etc/kubernetes/manifests$ cat kube-apiserver.yaml | grep ec.yaml -C4
+	spec:
+	  containers:
+	  - command:
+	    - kube-apiserver
+	    - --encryption-provider-config=/etc/kubernetes/etcd/ec.yaml
+	
+	
+	    volumeMounts:
+	    - mountPath: /etc/kubernetes/etcd/ec.yaml
+	      name: etcd-encryption-conf
+	      readOnly: true
+	    - mountPath: /etc/ssl/certs
+	      name: ca-certs
+	
+	
+	  volumes:
+	  - hostPath:
+	      path: /etc/kubernetes/etcd/ec.yaml
+	      type: File
+	    name: etcd-encryption-conf
+	
+3	Recreate the existing secrets
+	kubectl -n one get secrets -o json | kubectl replace -f -
+	kubectl -n two get secrets -o json | kubectl replace -f -
+	kubectl -n three get secrets -o json | kubectl replace -f -
+	
+4	Base64 encoding of secrets
+	
+	"root@controlplane:~$ echo -n ""this-is-very-sec"" | base64 
+dGhpcy1pcy12ZXJ5LXNlYw=="
+
+
+docker namespace
+_________________
+
+	root@controlplane:~$ docker run --name app1 -d nginx:alpine sleep infinity
+	Unable to find image 'nginx:alpine' locally
+	alpine: Pulling from library/nginx
+	6636b9fc203c: Pull complete 
+	Digest: sha256:a9ae6f6d078d477e21323310498e5196cb2b7c0aedd9e07b7306612077227d7c
+	Status: Downloaded newer image for nginx:alpine
+	01d5963f43d1d75b4496769174c7a4389b05ab8c19487ce318f909c2a1ae48ee
+	
+	root@controlplane:~$ docker ps
+	CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS         PORTS     NAMES
+	01d5963f43d1   nginx:alpine   "/docker-entrypoint.…"   5 seconds ago   Up 4 seconds   80/tcp    app1
+	
+	root@controlplane:~$ docker exec app1 ps
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	    7 root      0:00 ps
+	
+	root@controlplane:~$ docker exec app1 ps aux
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	   13 root      0:00 ps aux
+	
+	root@controlplane:~$ docker run --name app2 --pid=container:app1 -d nginx:alpine sleep infinity                     
+	bca357dbebb0262c10b2a7705d77eda3063425e8cfcb70d53ad7056cf4e342e8
+	
+	root@controlplane:~$ docker exec app2 ps aux
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	   31 root      0:00 sleep infinity
+	   37 root      0:00 ps aux
+	
+	root@controlplane:~$ docker exec app1 ps aux
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	   31 root      0:00 sleep infinity
+	   43 root      0:00 ps aux
+	root@controlplane:~$ 
+
+Podman namespace
+_________________
+
+	root@controlplane:~$ podman run --name app1 -d nginx:alpine sleep infinity
+	Resolving "nginx" using unqualified-search registries (/etc/containers/registries.conf)
+	Trying to pull docker.io/library/nginx:alpine...
+	Getting image source signatures
+	Writing manifest to image destination
+	d54ca199ce4de8942a8d107cc97e437c421a1675d7d047688e2a13c74ceee290
+	
+	root@controlplane:~$ podman exec app1 ps
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	    6 root      0:00 ps
+	
+	root@controlplane:~$ podman run --name app2 --pid=container:app1 -d nginx:alpine sleep infinity
+	7eb31a04e7681f6e101106251632d4d8d2c8f845661326822e2f03b90891468f
+	
+	root@controlplane:~$ podman exec app1 ps
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	   15 root      0:00 sleep infinity
+	   20 root      0:00 ps
+	
+	root@controlplane:~$ podman exec app2 ps
+	PID   USER     TIME  COMMAND
+	    1 root      0:00 sleep infinity
+	   15 root      0:00 sleep infinity
+	   25 root      0:00 ps
+	root@controlplane:~$ 
