@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<!-- saved from url=(0089)http://lnx214.home.aarisha.com:30080/answers.html?id=8d6b61d1-f835-47de-9860-24fc7abdbcdc -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Answers - CK-X Simulator</title>
+    <link rel="stylesheet" href="./Exam Answers - CK-X Simulator_files/styles.css">
+    <link rel="stylesheet" href="./Exam Answers - CK-X Simulator_files/results.css">
+    <link rel="stylesheet" href="./Exam Answers - CK-X Simulator_files/answers.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="./Exam Answers - CK-X Simulator_files/all.min.css">
+    <!-- Marked.js for Markdown rendering -->
+    <script src="./Exam Answers - CK-X Simulator_files/marked.min.js.download"></script>
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="./Exam Answers - CK-X Simulator_files/github.min.css">
+    <script src="./Exam Answers - CK-X Simulator_files/highlight.min.js.download"></script>
+</head>
+<body data-new-gr-c-s-check-loaded="14.1335.0" data-gr-ext-installed="">
+    <div class="container">
+        <main class="answers-container">
+            <!-- Loading state -->
+            <div id="pageLoader" class="page-loader" style="display: none;">
+                <div class="spinner"></div>
+                <p>Loading exam answers...</p>
+            </div>
+
+            <!-- Error message -->
+            <div id="errorMessage" class="error-message" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i>
+                <p id="errorText">An error occurred while loading the answers.</p>
+                <button id="retryButton" class="button">Retry</button>
+            </div>
+
+            <!-- Answers content -->
+            <div id="answersContent" class="answers-content" style="display: block;">
+                <div class="answers-header">
+                    <h2>Exam Answers</h2>
+                    <div class="answers-actions">
+                        <button id="backToResultsBtn" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i> Back to Results
+                        </button>
+                    </div>
+                </div>
+                <div id="examInfoBox" class="exam-info-box">
+                    <p id="examId">Exam ID: 8d6b61d1-f835-47de-9860-24fc7abdbcdc</p>
+                </div>
+                <div id="markdownContent" class="markdown-content"><h1>CKS Practice Lab - Kubernetes Security Essentials</h1>
+<h2>Question 1: Network Policies for Backend Services</h2>
+<p>Create a NetworkPolicy that restricts access to backend pods and controls their egress:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-backend</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">network-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">backend</span>
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Ingress</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Egress</span>
+  <span class="hljs-attr">ingress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">from:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">podSelector:</span>
+        <span class="hljs-attr">matchLabels:</span>
+          <span class="hljs-attr">app:</span> <span class="hljs-string">frontend</span>
+    <span class="hljs-attr">ports:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">8080</span>
+  <span class="hljs-attr">egress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">to:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">podSelector:</span>
+        <span class="hljs-attr">matchLabels:</span>
+          <span class="hljs-attr">app:</span> <span class="hljs-string">database</span>
+    <span class="hljs-attr">ports:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">5432</span>
+</code></pre>
+<p>This NetworkPolicy ensures:</p>
+<ul>
+<li>Only pods with label <code>app=frontend</code> can access backend pods on port 8080</li>
+<li>Backend pods can only communicate with pods labeled <code>app=database</code> on port 5432</li>
+</ul>
+<h2>Question 2: TLS-Enabled Ingress</h2>
+<p>Create an Ingress resource with TLS:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Ingress</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secure-ingress</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">tls:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">hosts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">secure-app.example.com</span>
+    <span class="hljs-attr">secretName:</span> <span class="hljs-string">secure-app-tls</span>
+  <span class="hljs-attr">rules:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">host:</span> <span class="hljs-string">secure-app.example.com</span>
+    <span class="hljs-attr">http:</span>
+      <span class="hljs-attr">paths:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">path:</span> <span class="hljs-string">/</span>
+        <span class="hljs-attr">pathType:</span> <span class="hljs-string">Prefix</span>
+        <span class="hljs-attr">backend:</span>
+          <span class="hljs-attr">service:</span>
+            <span class="hljs-attr">name:</span> <span class="hljs-string">web-service</span>
+            <span class="hljs-attr">port:</span>
+              <span class="hljs-attr">number:</span> <span class="hljs-number">80</span>
+</code></pre>
+<p>This Ingress:</p>
+<ul>
+<li>Routes traffic for hostname <code>secure-app.example.com</code> to the <code>web-service</code> service</li>
+<li>Uses the pre-created <code>secure-app-tls</code> secret for TLS termination</li>
+</ul>
+<h2>Question 3: API Security with Pod Security Standards</h2>
+<p>Create a namespace with Pod Security Standard:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Namespace</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">api-security</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">pod-security.kubernetes.io/enforce:</span> <span class="hljs-string">baseline</span>
+</code></pre>
+<p>Create a secure pod:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">securityContext:</span>
+    <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">1000</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">allowPrivilegeEscalation:</span> <span class="hljs-literal">false</span>
+</code></pre>
+<p>Create Role and RoleBinding for PSS viewing:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">pss-viewer-role</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-security</span>
+<span class="hljs-attr">rules:</span>
+<span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">""</span>]
+  <span class="hljs-attr">resources:</span> [<span class="hljs-string">"namespaces"</span>]
+  <span class="hljs-attr">verbs:</span> [<span class="hljs-string">"get"</span>]
+<span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">""</span>]
+  <span class="hljs-attr">resources:</span> [<span class="hljs-string">"namespaces/status"</span>]
+  <span class="hljs-attr">verbs:</span> [<span class="hljs-string">"get"</span>]
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">RoleBinding</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">pss-viewer-binding</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-security</span>
+<span class="hljs-attr">subjects:</span>
+<span class="hljs-bullet">-</span> <span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">pss-viewer</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-security</span>
+<span class="hljs-attr">roleRef:</span>
+  <span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">pss-viewer-role</span>
+  <span class="hljs-attr">apiGroup:</span> <span class="hljs-string">rbac.authorization.k8s.io</span>
+</code></pre>
+<p>This implementation:</p>
+<ul>
+<li>Creates a namespace with the Pod Security Standard "baseline" enforcement</li>
+<li>Deploys a pod that complies with the baseline standard (non-root, no privilege escalation)</li>
+<li>Sets up RBAC permissions for the PSS viewer service account</li>
+</ul>
+<h2>Question 4: Node Metadata Protection</h2>
+<p>Create a NetworkPolicy to block metadata access:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">block-metadata</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">metadata-protect</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span> {}  <span class="hljs-comment"># Apply to all pods</span>
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Egress</span>
+  <span class="hljs-attr">egress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">to:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">ipBlock:</span>
+        <span class="hljs-attr">cidr:</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><span class="hljs-string">/0</span>
+        <span class="hljs-attr">except:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-number">169.254</span><span class="hljs-number">.169</span><span class="hljs-number">.254</span><span class="hljs-string">/32</span>
+</code></pre>
+<p>Create a test pod:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">test-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">metadata-protect</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+</code></pre>
+<h2>Question 5: Binary Verification</h2>
+<p>Create a pod to verify Kubernetes binaries:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">verify-bin</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">binary-verify</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"/bin/sh"</span>, <span class="hljs-string">"-c"</span>]
+    <span class="hljs-attr">args:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">|
+      sha256sum /host-bin/kubectl &gt;&gt; /tmp/verified-hashes.txt
+      sha256sum /host-bin/kubelet &gt;&gt; /tmp/verified-hashes.txt
+      sleep 3600
+</span>    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">host-bin</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/host-bin</span>
+      <span class="hljs-attr">readOnly:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">host-bin</span>
+    <span class="hljs-attr">hostPath:</span>
+      <span class="hljs-attr">path:</span> <span class="hljs-string">/usr/bin</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">Directory</span>
+</code></pre>
+<h2>Question 6: RBAC with Minimal Permissions</h2>
+<p>Create Role and RoleBinding for minimal access:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app-reader-role</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">rbac-minimize</span>
+<span class="hljs-attr">rules:</span>
+<span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">""</span>]
+  <span class="hljs-attr">resources:</span> [<span class="hljs-string">"pods"</span>, <span class="hljs-string">"services"</span>]
+  <span class="hljs-attr">verbs:</span> [<span class="hljs-string">"get"</span>, <span class="hljs-string">"watch"</span>, <span class="hljs-string">"list"</span>]
+<span class="hljs-bullet">-</span> <span class="hljs-attr">apiGroups:</span> [<span class="hljs-string">"apps"</span>]
+  <span class="hljs-attr">resources:</span> [<span class="hljs-string">"deployments"</span>]
+  <span class="hljs-attr">verbs:</span> [<span class="hljs-string">"get"</span>, <span class="hljs-string">"watch"</span>, <span class="hljs-string">"list"</span>]
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">rbac.authorization.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">RoleBinding</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app-reader-binding</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">rbac-minimize</span>
+<span class="hljs-attr">subjects:</span>
+<span class="hljs-bullet">-</span> <span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app-reader</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">rbac-minimize</span>
+<span class="hljs-attr">roleRef:</span>
+  <span class="hljs-attr">kind:</span> <span class="hljs-string">Role</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app-reader-role</span>
+  <span class="hljs-attr">apiGroup:</span> <span class="hljs-string">rbac.authorization.k8s.io</span>
+</code></pre>
+<h2>Question 7: Service Account Caution</h2>
+<p>Create ServiceAccount with disabled automounting:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ServiceAccount</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">minimal-sa</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">service-account-caution</span>
+<span class="hljs-attr">automountServiceAccountToken:</span> <span class="hljs-literal">false</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">service-account-caution</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">replicas:</span> <span class="hljs-number">2</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span>
+      <span class="hljs-attr">labels:</span>
+        <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">serviceAccountName:</span> <span class="hljs-string">minimal-sa</span>
+      <span class="hljs-attr">automountServiceAccountToken:</span> <span class="hljs-literal">false</span>
+      <span class="hljs-attr">containers:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+</code></pre>
+<h2>Question 8: API Server Access Restriction</h2>
+<p>Create NetworkPolicy and test pods:</p>
+<pre><code class="language-bash hljs">API_SERVER_IP=$(kubectl get svc kubernetes -n default -o jsonpath=<span class="hljs-string">'{.spec.clusterIP}'</span>)
+</code></pre>
+<pre><code class="language-yaml hljs"><span class="hljs-string">cat</span> <span class="hljs-string">&lt;&lt;EOF</span> <span class="hljs-string">&gt;</span> <span class="hljs-string">api-server-policy.yaml</span>
+<span class="hljs-comment"># 1. Deny access to API server for all pods</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">api-server-policy</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-restrict</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span> {}
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Egress</span>
+  <span class="hljs-attr">egress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">to:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">ipBlock:</span>
+        <span class="hljs-attr">cidr:</span> <span class="hljs-number">0.0</span><span class="hljs-number">.0</span><span class="hljs-number">.0</span><span class="hljs-string">/0</span>
+        <span class="hljs-attr">except:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">${API_SERVER_IP}/32</span>
+
+<span class="hljs-meta">---</span>
+<span class="hljs-comment"># 2. Allow access to API server for pods with label role=admin</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">allow-admin-api-egress</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-restrict</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">role:</span> <span class="hljs-string">admin</span>
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Egress</span>
+  <span class="hljs-attr">egress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">to:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">ipBlock:</span>
+        <span class="hljs-attr">cidr:</span> <span class="hljs-string">${API_SERVER_IP}/32</span>
+    <span class="hljs-attr">ports:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">protocol:</span> <span class="hljs-string">TCP</span>
+      <span class="hljs-attr">port:</span> <span class="hljs-number">443</span>
+
+<span class="hljs-meta">---</span>
+<span class="hljs-comment"># admin-pod (can access API server)</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">admin-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-restrict</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">role:</span> <span class="hljs-string">admin</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+
+<span class="hljs-meta">---</span>
+<span class="hljs-comment"># restricted-pod (blocked from API server)</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">restricted-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">api-restrict</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">role:</span> <span class="hljs-string">restricted</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+<span class="hljs-string">EOF</span>
+</code></pre>
+<pre><code class="language-bash hljs">kubectl apply -f api-server-policy.yaml
+</code></pre>
+<h2>Question 9: Secure Container Configuration</h2>
+<p>Create a pod with minimal security context:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-container</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">os-hardening</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">capabilities:</span>
+        <span class="hljs-attr">drop:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">ALL</span>
+        <span class="hljs-attr">add:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">NET_BIND_SERVICE</span>
+      <span class="hljs-attr">readOnlyRootFilesystem:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">1000</span>
+      <span class="hljs-attr">runAsGroup:</span> <span class="hljs-number">3000</span>
+    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/tmp</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-cache-nginx</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/cache/nginx</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/run</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-cache-nginx</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+</code></pre>
+<h2>Question 10: Seccomp Profile</h2>
+<p>Create a pod with seccomp and a sample profile:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">seccomp-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">seccomp-profile</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">securityContext:</span>
+    <span class="hljs-attr">seccompProfile:</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">RuntimeDefault</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">seccomp-config</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">seccomp-profile</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">profile.json:</span> <span class="hljs-string">|
+    {
+      "defaultAction": "SCMP_ACT_ERRNO",
+      "architectures": ["SCMP_ARCH_X86_64"],
+      "syscalls": [
+        {
+          "names": ["exit", "exit_group", "rt_sigreturn", "read", "write", "open"],
+          "action": "SCMP_ACT_ALLOW"
+        }
+      ]
+    }
+</span></code></pre>
+<h2>Question 11: Pod Security Standards</h2>
+<p>Apply Pod Security Standards:</p>
+<pre><code class="language-bash hljs"><span class="hljs-comment"># Label the namespace</span>
+kubectl label namespace pod-security pod-security.kubernetes.io/enforce=baseline
+</code></pre>
+<p>Create a compliant pod:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">compliant-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">pod-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">securityContext:</span>
+    <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">1000</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">allowPrivilegeEscalation:</span> <span class="hljs-literal">false</span>
+</code></pre>
+<p>Try to create a non-compliant pod and document the error:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">non-compliant-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">pod-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<h2>Question 12: Secrets Management</h2>
+<p>Create and use secrets:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Secret</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">db-creds</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secrets-management</span>
+<span class="hljs-attr">type:</span> <span class="hljs-string">Opaque</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">username:</span> <span class="hljs-string">YWRtaW4=</span>  <span class="hljs-comment"># base64 encoded 'admin'</span>
+  <span class="hljs-attr">password:</span> <span class="hljs-string">U2VjcmV0UEBzc3cwcmQ=</span>  <span class="hljs-comment"># base64 encoded 'SecretP@ssw0rd'</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secrets-management</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">secret-volume</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/etc/db-creds</span>
+      <span class="hljs-attr">readOnly:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">secret-volume</span>
+    <span class="hljs-attr">secret:</span>
+      <span class="hljs-attr">secretName:</span> <span class="hljs-string">db-creds</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">env-app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secrets-management</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+    <span class="hljs-attr">env:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">DB_USER</span>
+      <span class="hljs-attr">valueFrom:</span>
+        <span class="hljs-attr">secretKeyRef:</span>
+          <span class="hljs-attr">name:</span> <span class="hljs-string">db-creds</span>
+          <span class="hljs-attr">key:</span> <span class="hljs-string">username</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">DB_PASS</span>
+      <span class="hljs-attr">valueFrom:</span>
+        <span class="hljs-attr">secretKeyRef:</span>
+          <span class="hljs-attr">name:</span> <span class="hljs-string">db-creds</span>
+          <span class="hljs-attr">key:</span> <span class="hljs-string">password</span>
+</code></pre>
+<h2>Question 13: Multi-Tenancy Isolation</h2>
+<p>Create tenant namespaces with isolation:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Namespace</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">tenant-a</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Namespace</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">tenant-b</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ResourceQuota</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">tenant-quota</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-a</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">hard:</span>
+    <span class="hljs-attr">pods:</span> <span class="hljs-string">"2"</span>
+    <span class="hljs-attr">limits.cpu:</span> <span class="hljs-string">"1"</span>
+    <span class="hljs-attr">limits.memory:</span> <span class="hljs-string">1Gi</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ResourceQuota</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">tenant-quota</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-b</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">hard:</span>
+    <span class="hljs-attr">pods:</span> <span class="hljs-string">"2"</span>
+    <span class="hljs-attr">limits.cpu:</span> <span class="hljs-string">"1"</span>
+    <span class="hljs-attr">limits.memory:</span> <span class="hljs-string">1Gi</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">deny-from-tenant-b</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-a</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span> {}
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Ingress</span>
+  <span class="hljs-attr">ingress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">from:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">namespaceSelector:</span>
+        <span class="hljs-attr">matchExpressions:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">kubernetes.io/metadata.name</span>
+          <span class="hljs-attr">operator:</span> <span class="hljs-string">NotIn</span>
+          <span class="hljs-attr">values:</span>
+          <span class="hljs-bullet">-</span> <span class="hljs-string">tenant-b</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">deny-from-tenant-a</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-b</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span> {}
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Ingress</span>
+  <span class="hljs-attr">ingress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">from:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">namespaceSelector:</span>
+        <span class="hljs-attr">matchExpressions:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">key:</span> <span class="hljs-string">kubernetes.io/metadata.name</span>
+          <span class="hljs-attr">operator:</span> <span class="hljs-string">NotIn</span>
+          <span class="hljs-attr">values:</span>
+          <span class="hljs-bullet">-</span> <span class="hljs-string">tenant-a</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-a</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">app</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">tenant-b</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+</code></pre>
+<h2>Question 14: Secure Container Image</h2>
+<p>Create ConfigMaps for image specifications:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">image-specs</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">image-security</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">base:</span> <span class="hljs-string">"alpine:3.14"</span>
+  <span class="hljs-attr">packages:</span> <span class="hljs-string">"nginx"</span>
+  <span class="hljs-attr">user:</span> <span class="hljs-string">"nginx"</span>
+  <span class="hljs-attr">entrypoint:</span> <span class="hljs-string">"nginx -g 'daemon off;'"</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">dockerfile</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">image-security</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">Dockerfile:</span> <span class="hljs-string">|
+    FROM alpine:3.14
+</span>    
+    <span class="hljs-string">RUN</span> <span class="hljs-string">apk</span> <span class="hljs-string">--no-cache</span> <span class="hljs-string">add</span> <span class="hljs-string">nginx</span> <span class="hljs-string">&amp;&amp;</span> <span class="hljs-string">\</span>
+        <span class="hljs-string">rm</span> <span class="hljs-string">-rf</span> <span class="hljs-string">/var/cache/apk/*</span> <span class="hljs-string">&amp;&amp;</span> <span class="hljs-string">\</span>
+        <span class="hljs-string">mkdir</span> <span class="hljs-string">-p</span> <span class="hljs-string">/var/cache/nginx</span> <span class="hljs-string">/var/run/nginx</span> <span class="hljs-string">&amp;&amp;</span> <span class="hljs-string">\</span>
+        <span class="hljs-string">chown</span> <span class="hljs-string">-R</span> <span class="hljs-string">nginx:nginx</span> <span class="hljs-string">/var/cache/nginx</span> <span class="hljs-string">/var/run/nginx</span> <span class="hljs-string">/var/log/nginx</span>
+    
+    <span class="hljs-string">USER</span> <span class="hljs-string">nginx</span>
+    
+    <span class="hljs-string">EXPOSE</span> <span class="hljs-number">80</span>
+    
+    <span class="hljs-string">CMD</span> [<span class="hljs-string">"nginx"</span>, <span class="hljs-string">"-g"</span>, <span class="hljs-string">"daemon off;"</span>]
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-image-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">image-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">101</span>
+      <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span>
+</code></pre>
+<h2>Question 15: Supply Chain Security</h2>
+<p>Create ConfigMaps for trusted registries and verification:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">trusted-registries</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">supply-chain</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">policy.yaml:</span> <span class="hljs-string">|
+    apiVersion: apiserver.config.k8s.io/v1
+    kind: AdmissionConfiguration
+    plugins:
+    - name: ImagePolicyWebhook
+      configuration:
+        imagePolicy:
+          repositories:
+          - docker.io/library/*
+          - k8s.gcr.io/*
+</span><span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">verify-script</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">supply-chain</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">verify.sh:</span> <span class="hljs-string">|
+    #!/bin/sh
+</span>    
+    <span class="hljs-comment"># Verify critical container images</span>
+    <span class="hljs-string">echo</span> <span class="hljs-string">"Verifying image: k8s.gcr.io/kube-apiserver:v1.24.0"</span>
+    <span class="hljs-string">EXPECTED_SHA="sha256:a874d5c2147124fc0331c8ad9bd89c259181d06faa8bba6b277217bfdc5e8ad9"</span>
+    <span class="hljs-string">echo</span> <span class="hljs-string">"Expected SHA: $EXPECTED_SHA"</span>
+    
+    <span class="hljs-string">echo</span> <span class="hljs-string">"Verifying image: k8s.gcr.io/kube-controller-manager:v1.24.0"</span>
+    <span class="hljs-string">EXPECTED_SHA="sha256:a7ed87380344dbad669a17fa4ceb5d6c7dc2c9cd8dd676f9046d48336a97082a"</span>
+    <span class="hljs-string">echo</span> <span class="hljs-string">"Expected SHA: $EXPECTED_SHA"</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">verification-pod</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">supply-chain</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">verify</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"/bin/sh"</span>, <span class="hljs-string">"/scripts/verify.sh"</span>]
+    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">script-volume</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/scripts</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">script-volume</span>
+    <span class="hljs-attr">configMap:</span>
+      <span class="hljs-attr">name:</span> <span class="hljs-string">verify-script</span>
+      <span class="hljs-attr">defaultMode:</span> <span class="hljs-number">0744</span>
+</code></pre>
+<h2>Question 16: Static Analysis</h2>
+<p>Analyze and fix a deployment:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">security-analysis</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">static-analysis</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">analysis-results:</span> <span class="hljs-string">|
+    {
+      "score": 3,
+      "scoring": {
+        "critical": 0,
+        "high": 2,
+        "medium": 3
+      },
+      "results": [
+        {"rule": "RunAsNonRoot", "points": -5},
+        {"rule": "PrivilegedContainer", "points": -8},
+        {"rule": "ReadOnlyRootFilesystem", "points": -3},
+        {"rule": "DropCapabilities", "points": -2}
+      ]
+    }
+</span><span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Deployment</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-deployment</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">static-analysis</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">replicas:</span> <span class="hljs-number">1</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span>
+      <span class="hljs-attr">labels:</span>
+        <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">securityContext:</span>
+        <span class="hljs-attr">runAsNonRoot:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">runAsUser:</span> <span class="hljs-number">1000</span>
+      <span class="hljs-attr">containers:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">app</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span>
+        <span class="hljs-attr">securityContext:</span>
+          <span class="hljs-attr">allowPrivilegeEscalation:</span> <span class="hljs-literal">false</span>
+          <span class="hljs-attr">readOnlyRootFilesystem:</span> <span class="hljs-literal">true</span>
+          <span class="hljs-attr">capabilities:</span>
+            <span class="hljs-attr">drop:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">ALL</span>
+            <span class="hljs-attr">add:</span>
+            <span class="hljs-bullet">-</span> <span class="hljs-string">NET_BIND_SERVICE</span>
+        <span class="hljs-attr">resources:</span>
+          <span class="hljs-attr">limits:</span>
+            <span class="hljs-attr">cpu:</span> <span class="hljs-string">"100m"</span>
+            <span class="hljs-attr">memory:</span> <span class="hljs-string">"128Mi"</span>
+          <span class="hljs-attr">requests:</span>
+            <span class="hljs-attr">cpu:</span> <span class="hljs-string">"50m"</span>
+            <span class="hljs-attr">memory:</span> <span class="hljs-string">"64Mi"</span>
+        <span class="hljs-attr">volumeMounts:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+          <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/tmp</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+          <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/run</span>
+      <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+        <span class="hljs-attr">emptyDir:</span> {}
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+        <span class="hljs-attr">emptyDir:</span> {}
+</code></pre>
+<h2>Question 17: Runtime Security</h2>
+<p>Implement runtime security measures:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">immutable-container</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">runtime-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx:alpine</span>
+    <span class="hljs-attr">securityContext:</span>
+      <span class="hljs-attr">readOnlyRootFilesystem:</span> <span class="hljs-literal">true</span>
+    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/tmp</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-cache-nginx</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/cache/nginx</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/run</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">tmp</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-cache-nginx</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">var-run</span>
+    <span class="hljs-attr">emptyDir:</span> {}
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">falco-rules</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">runtime-security</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">rules.yaml:</span> <span class="hljs-string">|
+    - rule: Terminal shell in container
+      desc: A shell was spawned by a pod in the cluster
+      condition: container and container.image != "shell-allowed" and proc.name = bash
+      output: Shell spawned in a container (pod=%k.pod.name container=%container.name shell=%proc.name)
+      priority: WARNING
+</span>    
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">rule:</span> <span class="hljs-string">Package</span> <span class="hljs-string">Management</span> <span class="hljs-string">Detected</span>
+      <span class="hljs-attr">desc:</span> <span class="hljs-string">Package</span> <span class="hljs-string">management</span> <span class="hljs-string">command</span> <span class="hljs-string">executed</span> <span class="hljs-string">in</span> <span class="hljs-string">container</span>
+      <span class="hljs-attr">condition:</span> <span class="hljs-string">container</span> <span class="hljs-string">and</span> <span class="hljs-string">(proc.name</span> <span class="hljs-string">=</span> <span class="hljs-string">apt</span> <span class="hljs-string">or</span> <span class="hljs-string">proc.name</span> <span class="hljs-string">=</span> <span class="hljs-string">apt-get</span> <span class="hljs-string">or</span> <span class="hljs-string">proc.name</span> <span class="hljs-string">=</span> <span class="hljs-string">apk)</span>
+      <span class="hljs-attr">output:</span> <span class="hljs-string">Package</span> <span class="hljs-string">management</span> <span class="hljs-string">command</span> <span class="hljs-string">executed</span> <span class="hljs-string">(pod=%k.pod.name</span> <span class="hljs-string">container=%container.name</span> <span class="hljs-string">command=%proc.cmdline)</span>
+      <span class="hljs-attr">priority:</span> <span class="hljs-string">WARNING</span>
+    
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">rule:</span> <span class="hljs-string">Sensitive</span> <span class="hljs-string">File</span> <span class="hljs-string">Access</span>
+      <span class="hljs-attr">desc:</span> <span class="hljs-string">Sensitive</span> <span class="hljs-string">file</span> <span class="hljs-string">accessed</span> <span class="hljs-string">in</span> <span class="hljs-string">container</span>
+      <span class="hljs-attr">condition:</span> <span class="hljs-string">container</span> <span class="hljs-string">and</span> <span class="hljs-string">fd.name</span> <span class="hljs-string">startswith</span> <span class="hljs-string">/etc/shadow</span>
+      <span class="hljs-attr">output:</span> <span class="hljs-string">Sensitive</span> <span class="hljs-string">file</span> <span class="hljs-string">accessed</span> <span class="hljs-string">(pod=%k.pod.name</span> <span class="hljs-string">container=%container.name</span> <span class="hljs-string">file=%fd.name)</span>
+      <span class="hljs-attr">priority:</span> <span class="hljs-string">CRITICAL</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">apps/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">DaemonSet</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">audit-daemon</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">runtime-security</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">selector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">app:</span> <span class="hljs-string">audit-daemon</span>
+  <span class="hljs-attr">template:</span>
+    <span class="hljs-attr">metadata:</span>
+      <span class="hljs-attr">labels:</span>
+        <span class="hljs-attr">app:</span> <span class="hljs-string">audit-daemon</span>
+    <span class="hljs-attr">spec:</span>
+      <span class="hljs-attr">containers:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">falco</span>
+        <span class="hljs-attr">image:</span> <span class="hljs-string">falcosecurity/falco:latest</span>
+        <span class="hljs-attr">securityContext:</span>
+          <span class="hljs-attr">privileged:</span> <span class="hljs-literal">true</span>
+        <span class="hljs-attr">volumeMounts:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">rules</span>
+          <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/etc/falco/rules.d/</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">dev</span>
+          <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/dev</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">proc</span>
+          <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/host/proc</span>
+          <span class="hljs-attr">readOnly:</span> <span class="hljs-literal">true</span>
+      <span class="hljs-attr">volumes:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">rules</span>
+        <span class="hljs-attr">configMap:</span>
+          <span class="hljs-attr">name:</span> <span class="hljs-string">falco-rules</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">dev</span>
+        <span class="hljs-attr">hostPath:</span>
+          <span class="hljs-attr">path:</span> <span class="hljs-string">/dev</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">proc</span>
+        <span class="hljs-attr">hostPath:</span>
+          <span class="hljs-attr">path:</span> <span class="hljs-string">/proc</span>
+</code></pre>
+<h2>Question 18: Audit Logging</h2>
+<p>Configure audit logging:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">audit-policy</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">audit-logging</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">policy.yaml:</span> <span class="hljs-string">|
+    apiVersion: audit.k8s.io/v1
+    kind: Policy
+    rules:
+    # Don't log read-only operations on configmaps or secrets
+    - level: None
+      verbs: ["get", "list", "watch"]
+      resources:
+      - group: ""
+        resources: ["configmaps", "secrets"]
+</span>    
+    <span class="hljs-comment"># Log auth at metadata level</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">level:</span> <span class="hljs-string">Metadata</span>
+      <span class="hljs-attr">userGroups:</span> [<span class="hljs-string">"system:authenticated"</span>, <span class="hljs-string">"system:unauthenticated"</span>]
+      <span class="hljs-attr">stages:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-string">"RequestReceived"</span>
+    
+    <span class="hljs-comment"># Log auth failures at Request level</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">level:</span> <span class="hljs-string">Request</span>
+      <span class="hljs-attr">responseStatus:</span>
+        <span class="hljs-attr">code:</span> <span class="hljs-string">"4*"</span>
+      <span class="hljs-attr">resources:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">group:</span> <span class="hljs-string">""</span>
+        <span class="hljs-attr">resources:</span> [<span class="hljs-string">"*"</span>]
+    
+    <span class="hljs-comment"># Log pod operations at RequestResponse level</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">level:</span> <span class="hljs-string">RequestResponse</span>
+      <span class="hljs-attr">resources:</span>
+      <span class="hljs-bullet">-</span> <span class="hljs-attr">group:</span> <span class="hljs-string">""</span>
+        <span class="hljs-attr">resources:</span> [<span class="hljs-string">"pods"</span>]
+      <span class="hljs-attr">verbs:</span> [<span class="hljs-string">"create"</span>, <span class="hljs-string">"delete"</span>]
+    
+    <span class="hljs-comment"># Default rule for all other requests</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">level:</span> <span class="hljs-string">Metadata</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">audit-viewer</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">audit-logging</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">serviceAccountName:</span> <span class="hljs-string">audit-viewer-sa</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">viewer</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"sleep"</span>, <span class="hljs-string">"3600"</span>]
+    <span class="hljs-attr">volumeMounts:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">audit-logs</span>
+      <span class="hljs-attr">mountPath:</span> <span class="hljs-string">/var/log/kubernetes/audit</span>
+      <span class="hljs-attr">readOnly:</span> <span class="hljs-literal">true</span>
+  <span class="hljs-attr">volumes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">audit-logs</span>
+    <span class="hljs-attr">hostPath:</span>
+      <span class="hljs-attr">path:</span> <span class="hljs-string">/var/log/kubernetes/audit</span>
+      <span class="hljs-attr">type:</span> <span class="hljs-string">Directory</span>
+</code></pre>
+<h2>Question 19: Malicious Activity Detection</h2>
+<p>Create detection rules and isolation policy:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">threat-detection</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">malicious-detection</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">rules.yaml:</span> <span class="hljs-string">|
+    - rule: Unusual Network Communication
+      description: Detects connections to suspicious IPs or unusual ports
+      indicators:
+        - connections to non-standard ports (outside common ranges)
+        - connections to known malicious IPs
+        - high volume of outbound connections
+</span>    
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">rule:</span> <span class="hljs-string">Crypto</span> <span class="hljs-string">Mining</span> <span class="hljs-string">Detection</span>
+      <span class="hljs-attr">description:</span> <span class="hljs-string">Detects</span> <span class="hljs-string">potential</span> <span class="hljs-string">crypto</span> <span class="hljs-string">mining</span> <span class="hljs-string">activities</span>
+      <span class="hljs-attr">indicators:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">high</span> <span class="hljs-string">CPU</span> <span class="hljs-string">usage</span> <span class="hljs-string">for</span> <span class="hljs-string">extended</span> <span class="hljs-string">periods</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">connections</span> <span class="hljs-string">to</span> <span class="hljs-string">mining</span> <span class="hljs-string">pools</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">presence</span> <span class="hljs-string">of</span> <span class="hljs-string">mining</span> <span class="hljs-string">binary</span> <span class="hljs-string">signatures</span>
+    
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">rule:</span> <span class="hljs-string">Privilege</span> <span class="hljs-string">Escalation</span>
+      <span class="hljs-attr">description:</span> <span class="hljs-string">Detects</span> <span class="hljs-string">attempts</span> <span class="hljs-string">to</span> <span class="hljs-string">gain</span> <span class="hljs-string">higher</span> <span class="hljs-string">privileges</span>
+      <span class="hljs-attr">indicators:</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">use</span> <span class="hljs-string">of</span> <span class="hljs-string">sudo</span> <span class="hljs-string">or</span> <span class="hljs-string">su</span> <span class="hljs-string">commands</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">modification</span> <span class="hljs-string">of</span> <span class="hljs-string">sudoers</span> <span class="hljs-string">files</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">usage</span> <span class="hljs-string">of</span> <span class="hljs-string">setuid</span> <span class="hljs-string">binaries</span>
+        <span class="hljs-bullet">-</span> <span class="hljs-string">container</span> <span class="hljs-string">escape</span> <span class="hljs-string">attempts</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">detector</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">malicious-detection</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">detector</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">busybox</span>
+    <span class="hljs-attr">command:</span> [<span class="hljs-string">"/bin/sh"</span>, <span class="hljs-string">"-c"</span>]
+    <span class="hljs-attr">args:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-string">|
+      while true; do
+        echo "Running threat detection checks..."
+        sleep 60
+      done
+</span><span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">networking.k8s.io/v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">NetworkPolicy</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">isolate-compromised</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">malicious-detection</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">podSelector:</span>
+    <span class="hljs-attr">matchLabels:</span>
+      <span class="hljs-attr">security-status:</span> <span class="hljs-string">compromised</span>
+  <span class="hljs-attr">policyTypes:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Ingress</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-string">Egress</span>
+  <span class="hljs-attr">ingress:</span> []  <span class="hljs-comment"># Deny all ingress</span>
+  <span class="hljs-attr">egress:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">to:</span>  <span class="hljs-comment"># Allow DNS resolution only</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">namespaceSelector:</span> {}
+      <span class="hljs-attr">podSelector:</span>
+        <span class="hljs-attr">matchLabels:</span>
+          <span class="hljs-attr">k8s-app:</span> <span class="hljs-string">kube-dns</span>
+    <span class="hljs-attr">ports:</span>
+    <span class="hljs-bullet">-</span> <span class="hljs-attr">port:</span> <span class="hljs-number">53</span>
+      <span class="hljs-attr">protocol:</span> <span class="hljs-string">UDP</span>
+</code></pre>
+<h2>Question 20: Cilium Pod-to-Pod Encryption</h2>
+<p>Implement pod-to-pod encryption with Cilium:</p>
+<pre><code class="language-yaml hljs"><span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Namespace</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-comms</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">ConfigMap</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">cilium-encryption</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">cilium-encryption</span>
+<span class="hljs-attr">data:</span>
+  <span class="hljs-attr">encryption-config.yaml:</span> <span class="hljs-string">|
+    # Key rotation mechanism
+    Key rotation is handled automatically by Cilium. Keys are rotated periodically to ensure 
+    perfect forward secrecy. The rotation interval is configurable.
+</span>    
+    <span class="hljs-comment"># IPSec encryption method</span>
+    <span class="hljs-string">Cilium</span> <span class="hljs-string">uses</span> <span class="hljs-string">IPSec</span> <span class="hljs-string">with</span> <span class="hljs-string">ESP</span> <span class="hljs-string">in</span> <span class="hljs-string">tunnel</span> <span class="hljs-string">mode</span> <span class="hljs-string">for</span> <span class="hljs-string">encryption.</span> <span class="hljs-string">The</span> <span class="hljs-string">encryption</span> <span class="hljs-string">and</span> <span class="hljs-string">authentication</span> 
+    <span class="hljs-string">algorithms</span> <span class="hljs-string">used</span> <span class="hljs-string">are</span> <span class="hljs-string">AES-GCM</span> <span class="hljs-string">for</span> <span class="hljs-string">encryption</span> <span class="hljs-string">and</span> <span class="hljs-string">SHA-256</span> <span class="hljs-string">for</span> <span class="hljs-string">authentication.</span>
+    
+    <span class="hljs-comment"># Transparent encryption approach</span>
+    <span class="hljs-string">Encryption</span> <span class="hljs-string">is</span> <span class="hljs-string">performed</span> <span class="hljs-string">transparently</span> <span class="hljs-string">without</span> <span class="hljs-string">requiring</span> <span class="hljs-string">changes</span> <span class="hljs-string">to</span> <span class="hljs-string">the</span> <span class="hljs-string">application.</span> 
+    <span class="hljs-string">The</span> <span class="hljs-string">encryption</span> <span class="hljs-string">happens</span> <span class="hljs-string">at</span> <span class="hljs-string">the</span> <span class="hljs-string">network</span> <span class="hljs-string">layer</span> <span class="hljs-string">and</span> <span class="hljs-string">is</span> <span class="hljs-string">transparent</span> <span class="hljs-string">to</span> <span class="hljs-string">the</span> <span class="hljs-string">pods.</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-pod-a</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secure-comms</span>
+  <span class="hljs-attr">annotations:</span>
+    <span class="hljs-attr">io.cilium.proxy-visibility:</span> <span class="hljs-string">"&lt;Ingress/80/TCP/HTTP&gt;"</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+    <span class="hljs-attr">io.cilium.encryption:</span> <span class="hljs-string">"enabled"</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+<span class="hljs-meta">---</span>
+<span class="hljs-attr">apiVersion:</span> <span class="hljs-string">v1</span>
+<span class="hljs-attr">kind:</span> <span class="hljs-string">Pod</span>
+<span class="hljs-attr">metadata:</span>
+  <span class="hljs-attr">name:</span> <span class="hljs-string">secure-pod-b</span>
+  <span class="hljs-attr">namespace:</span> <span class="hljs-string">secure-comms</span>
+  <span class="hljs-attr">annotations:</span>
+    <span class="hljs-attr">io.cilium.proxy-visibility:</span> <span class="hljs-string">"&lt;Egress/80/TCP/HTTP&gt;"</span>
+  <span class="hljs-attr">labels:</span>
+    <span class="hljs-attr">app:</span> <span class="hljs-string">secure-app</span>
+    <span class="hljs-attr">io.cilium.encryption:</span> <span class="hljs-string">"enabled"</span>
+<span class="hljs-attr">spec:</span>
+  <span class="hljs-attr">containers:</span>
+  <span class="hljs-bullet">-</span> <span class="hljs-attr">name:</span> <span class="hljs-string">nginx</span>
+    <span class="hljs-attr">image:</span> <span class="hljs-string">nginx</span>
+</code></pre>
+</div>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <p style="text-align: center;">© <span id="currentYear">2026</span> CK-X Simulator.</p>
+        </footer>
+    </div>
+
+    <script src="./Exam Answers - CK-X Simulator_files/answers.js.download"></script>
+    <script>
+        // Set the current year for copyright
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+    </script>
+
+ </body><grammarly-desktop-integration data-grammarly-shadow-root="true" style="visibility: visible !important;"><template shadowrootmode="open"><style>
+      div.grammarly-desktop-integration {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select:none;
+        user-select:none;
+      }
+
+      div.grammarly-desktop-integration:before {
+        content: attr(data-content);
+      }
+    </style><div aria-label="grammarly-integration" role="group" tabindex="-1" class="grammarly-desktop-integration" data-content="{&quot;mode&quot;:&quot;full&quot;,&quot;isActive&quot;:true,&quot;isUserDisabled&quot;:false}"></div></template></grammarly-desktop-integration></html>
